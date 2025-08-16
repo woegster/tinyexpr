@@ -235,6 +235,26 @@ static double divide(double a, double b) {return a / b;}
 static double negate(double a) {return -a;}
 static double comma(double a, double b) {(void)a; return b;}
 
+int is_not_special_token(char c)
+{
+  switch (c) {
+  case '+':
+  case '-':
+  case '*':
+  case '/':
+  case '^':
+  case '%':
+  case '(':
+  case ')':
+  case ',':
+  case ' ':
+  case '\t':
+  case '\n':
+  case '\r':
+    return 0;
+  }
+  return 1;
+}
 
 void next_token(state *s) {
     s->type = TOK_NULL;
@@ -252,10 +272,10 @@ void next_token(state *s) {
             s->type = TOK_NUMBER;
         } else {
             /* Look for a variable or builtin function call. */
-            if (isalpha(s->next[0])) {
+            if (is_not_special_token(s->next[0])) {
                 const char *start;
                 start = s->next;
-                while (isalpha(s->next[0]) || isdigit(s->next[0]) || (s->next[0] == '_')) s->next++;
+                while (is_not_special_token(s->next[0]) || isdigit(s->next[0]) || (s->next[0] == '_')) s->next++;
                 
                 const te_variable *var = find_lookup(s, start, s->next - start);
                 if (!var) var = find_builtin(start, s->next - start);
