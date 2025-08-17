@@ -251,6 +251,7 @@ int is_not_special_token(char c)
   case '\t':
   case '\n':
   case '\r':
+  case '\0':
     return 0;
   }
   return 1;
